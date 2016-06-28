@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"path/filepath"
 	"testing"
 
 	"github.com/jmoiron/gotk3/glib"
@@ -60,4 +61,19 @@ func TestGSettingsPOC(t *testing.T) {
 	settings = glib.SettingsNew("org.mate.interface")
 	fmt.Println("cursor-blink-time", settings.GetInt("cursor-blink-time"))
 	fmt.Println(settings.GetValue("cursor-blink-time").GetInt())
+
+	source = glib.SettingsSchemaSourceGetDefault()
+	profiles := val.GetStrv()
+	for _, prof := range profiles {
+		path := filepath.Join("/org/mate/terminal/profiles", prof) + "/"
+		schema := "org.mate.terminal.profile"
+		fmt.Println(path, schema)
+		settings := glib.SettingsNewWithPath("org.mate.terminal.profile", path)
+		keys := source.Lookup(schema, true).ListKeys()
+		fmt.Println(schema, path, settings, keys)
+		for _, key := range keys {
+			variant := settings.GetValue(key)
+			fmt.Println(key, variant)
+		}
+	}
 }
