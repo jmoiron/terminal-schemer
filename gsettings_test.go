@@ -5,7 +5,7 @@ import (
 	"path/filepath"
 	"testing"
 
-	"github.com/jmoiron/gotk3/glib"
+	"github.com/gotk3/gotk3/glib"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -46,6 +46,9 @@ func TestGSettingsPOC(t *testing.T) {
 		fmt.Println(schema.ListKeys())
 	}
 
+	profs := listMateProfileNames()
+	fmt.Println(profs)
+
 	schema = glib.SettingsSchemaSourceGetDefault().Lookup(mateProfileList.schema, true)
 	settings := glib.SettingsNew(mateProfileList.schema)
 	fmt.Println(settings.ListChildren())
@@ -72,8 +75,10 @@ func TestGSettingsPOC(t *testing.T) {
 		keys := source.Lookup(schema, true).ListKeys()
 		fmt.Println(schema, path, settings, keys)
 		for _, key := range keys {
-			variant := settings.GetValue(key)
-			fmt.Println(key, variant)
+			settings.GetValue(key)
 		}
+		p, err := newMateProfile(prof)
+		assert.Nil(err)
+		fmt.Printf("%#v\n", p)
 	}
 }
